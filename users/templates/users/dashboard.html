@@ -1,0 +1,115 @@
+{% extends 'feed/base.html'%}
+{% block content %}
+
+<div class="main-content">
+  <div class="container-fluid mt-7">
+    <div class="row" style="margin:10px 10% 10px 10%">
+      <div class="col-xl-8 m-auto order-xl-2 mb-5 mb-xl-0">
+        <div class="card card-profile shadow">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="{{ u.profile.image.url }}">
+                  <img
+                    src="{{ u.profile.image.url }}"
+                    class="rounded-circle"
+                    width="160px"
+                    height="160px"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></div>
+          <div class="card-body pt-0 pt-md-4">
+            <div class="row">
+              <div class="col">
+                <div class="card-profile-stats d-flex justify-content-center mt-md-5">
+                  <div>
+                    <span class="heading">{{ u.profile.friends.count }}</span>
+                    {% if request.user == u %}
+                    <span class="description"><a href="{% url 'users:friend_list' %}">following</a></span>
+                    {% else %}
+                    <span class="description">Friends</span>
+                    {% endif %}
+                    <span class="description"><a href="{% url 'feed:wishlist' %}">Wishlist</a></span>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-center">
+              <h3>{{ u }}</h3>
+              <p>{{ u.profile.bio }}</p>
+              <p>{{ u.profile.About}}</p>
+              <p>{{u.profile.url}}</p>
+              <p>{{u.profile.profile_type}}</p>
+              <hr class="my-2" />
+              <a class="btn btn-info" href="{% url 'users:about' %}">about</a>
+              {% if request.user == u %}
+              <a class="btn btn-info" href="{% url 'users:editprofile' %}">Edit Profile</a>
+              {% if u.profile.profile_type == "company" %}
+              <a class="btn btn-info" href="{% url 'feed:create_post' %}">create post</a>
+              {% endif %}
+               {% else %}
+               {% if button == 'follow' %}
+               <a class="btn btn-primary" href="{% url 'users:add_friends' u.id %}">Follow</a>
+               {% else %}
+                <a class="btn btn-danger" href="{% url 'users:delete_friend' u.id %}">Unfollow</a>
+                {% endif %}
+               {% endif %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="row" style="margin-left: 5%;margin-right:1%;margin-bottom:20px;border-right: 1px">
+          <div class="col-md-8">
+            <div class="row">
+                  {% for post in post %}
+                    <div class="col-md-3 mb-3" style="margin-right: -10px">
+                        <div class="card">
+                            {% for p in post.img.all %}
+                            {% if forloop.counter == 1 %}<a href="{% url 'feed:postdetails' post.id %}">
+                            <img class="img-fluid " alt="100%x280" src="{{p.pimages.url}}" style="height: 250px;"></a>
+                            {% endif %}
+                            {% endfor %}
+                            <div class="card-body" align="center">
+                                <p >
+                                  <form method="POST" action="" class="rate-form">{% csrf_token %}
+                                    <span class="fa fa-star checked  first"></span>
+                                    <span class="fa fa-star checked second"></span>
+                                    <span class="fa fa-star checked third"></span>
+                                    <span class="fa fa-star fourth"></span>
+                                    <span class="fa fa-star fifth"></span>
+                                  </form>
+                                </p>
+                                <button class="btn btn-outline-primary btn-block">Watchlist</button><br>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+          </div>
+            {% if request.user == u %}
+            {% if u.profile.profile_type == "people"%}
+            <div class="col-md-4"><h4>following</h4>
+            {% for freq in frequest %}<a href="{% url 'users:profile_v' freq.id%}">
+            <img src="{{freq.from_user.profile.image.url}}" class="rounded mr-2"
+                    width="40"
+                    height="40">
+                    {{freq.from_user}} </a>
+                    <a href="{% url 'users:add_friends' freq.from_user.id %}"><button class="btn btn_primary">follow</button></a>
+                    <a href="{% url 'users:cancel_friend' freq.from_user.id %}"><button class="btn btn_primary">cancel</button></a><br>
+            {% endfor %}
+            <br>
+            {% endif %}
+            {% endif %}
+          </div>
+      </div>
+  </div>
+</div>
+<br style="padding-bottom: 100px;">
+
+{% endblock content %} 

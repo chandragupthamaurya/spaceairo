@@ -1,0 +1,48 @@
+{% extends 'feed/base.html' %}
+{% block content %}
+<style type="text/css">
+  label{
+    margin-right: 50px;
+  }
+</style>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-6 pb-5">
+<form id="post_form" method="POST" action="{% url 'feed:create_post' %}" enctype="multipart/form-data">    {% csrf_token %}
+
+ <div class="card" style="  box-shadow: 0 8px 16px 0    #009999;">
+  <div class="card-header">
+    <h3>Post Future</h3>
+  </div>
+  <div class="card-body">
+       {% for field in postForm %}
+  <p>
+    {{ field.label_tag}}<br>
+    {{field}}
+    {% if field.help_text %}
+    <small style='color: grey'>{{field.help_text}}</small>
+    {% endif %}
+    {% for error in field.errors %}
+    <p style='color: red'>{{error}}</p>
+    {% endfor %}
+  </p>  
+  {% endfor %}
+    <div>{{imageform.as_p}}</div>
+    
+    
+  </div>
+  <div class="card-footer text-center">
+    <button  class= "btn btn-lg btn-primary" style="background-color: #009999;color: white;" type="submit" name="submit" value="Submit" >Launch</button>
+     </div>
+</div>
+</form>
+</div>
+<div class="col-3">
+  
+</div>
+</div>
+ 
+
+{% endblock content %}
